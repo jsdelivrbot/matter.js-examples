@@ -45,8 +45,7 @@ function update()
     // run the engine
     if(right)
     {
-        boxA.position.x += 2;
-        boxA.position.y -= 1;
+        Matter.Body.setVelocity(boxA, { x: 2, y: boxA.velocity.y});
     }
     Engine.update(engine, 15);
     render();
