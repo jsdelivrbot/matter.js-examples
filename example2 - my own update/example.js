@@ -63,8 +63,6 @@ function render()
       context.rotate(ground.angle);
       context.fillRect(-405, -30, 810, 60);
     context.restore();
-
-    window.requestAnimationFrame(render);
 }
 
 window.requestAnimationFrame(update);
