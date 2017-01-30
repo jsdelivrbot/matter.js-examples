@@ -1,0 +1,21 @@
+
+div#game
+{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 640px;
+	height: 480px;
+	background-color: black;
+	margin: -240px 0 0 -320px;
+	background-image: url(https://s-media-cache-ak0.pinimg.com/originals/8c/f0/58/8cf0588c2dbe6de66e0200984401ca82.png);
+}
+canvas
+{
+    background-color: rgba(255,255,255,0.35);
+}
+
+body,html
+{
+	//background-color: black;
+}
