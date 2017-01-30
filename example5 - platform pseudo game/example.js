@@ -53,7 +53,7 @@ var game = (function() {
 		rock_texture = new Image();
 		rock_texture.src = "http://hasgraphics.com/wp-content/uploads/2010/07/basic_ground_tileset.png";
 		player_texture = new Image();
-		player_texture.src = "http://static.comicvine.com/uploads/original/11115/111152790/4651830-kirby_kssu.png";
+		player_texture.src = "http://cdn.wikimg.net/strategywiki/images/c/cc/Contra_NES_sprite_player1.png";
 
         var div = document.querySelector(container_selector);
         canvas = document.createElement("canvas");
