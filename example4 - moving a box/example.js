@@ -22,6 +22,32 @@ var boxA = Bodies.rectangle(400, 200, 80, 80);
 var boxB = Bodies.rectangle(450, 50, 80, 80);
 var ground = Bodies.rectangle(400, 610, 810, 60, { isStatic: true });
 
+var keys = {
+  right : false,
+  left  : false,
+  space  : false,
+}
+var jump_locked = false;
+
+function onkeyEvent(e, isKeydown)
+{
+    switch(e.keyCode)
+    {
+        case 68 : keys.right = isKeydown; break;
+        case 65 : keys.left = isKeydown; break;
+        case 32 : keys.space = isKeydown; break;
+        case 87 : keys.space = isKeydown; break;
+    }
+}
+
+window.addEventListener("keydown", function(e){
+  onkeyEvent(e, true);
+});
+
+window.addEventListener("keyup", function(e){
+    onkeyEvent(e, false);
+});
+
 // add all of the bodies to the world
 World.add(engine.world, [boxA, boxB, ground]);
 
@@ -32,21 +58,30 @@ ground_texture.onload = function() {
 
 var right = false;
 
-window.addEventListener("keydown", function(){
-    right = true;
-});
-
-window.addEventListener("keyup", function(){
-    right = false;
-});
-
 function update()
 {
     // run the engine
-    if(right)
+    if(keys.right)
     {
-        Matter.Body.setVelocity(boxA, { x: 2, y: -10});
+        Matter.Body.setVelocity(boxA, { x : 5, y : boxA.velocity.y } );
     }
+    else if(keys.left)
+    {
+        Matter.Body.setVelocity(boxA, { x : -5, y : boxA.velocity.y } );
+    }
+    else
+    {
+        Matter.Body.setVelocity(boxA, { x : 0, y : boxA.velocity.y } );
+    }
+    if(keys.space && !jump_locked)
+    {
+        jump_locked = true;
+        Matter.Body.setVelocity(boxA, { x : boxA.velocity.x , y : -10} );
+        setTimeout(function(){
+          jump_locked = false;
+        }, 1000);
+    }
+    Matter.Body.rotate(boxA, -boxA.angle);
     Engine.update(engine, 15);
     render();
     window.requestAnimationFrame(update);
