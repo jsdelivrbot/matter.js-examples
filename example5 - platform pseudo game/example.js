@@ -84,6 +84,7 @@ var game = (function() {
                      	case 1 : rocks.push(obj); break;
                      	case 2 : boxes.push(obj); break;
                      	case 3 : player = obj;
+                                 player.friction = 0;
                      	         Matter.Body.setInertia(obj, Infinity);
                      	         break;
                      }
@@ -121,13 +122,13 @@ var game = (function() {
 	{
 		if(controls.right)
 		{
-			Matter.Body.setVelocity(player, { x : 2, y : player.velocity.y } );
-			//Matter.Body.translate(player, {x: 2, y: 0});
+			//Matter.Body.setVelocity(player, { x : 2, y : player.velocity.y } );
+			Matter.Body.translate(player, {x: 2, y: 0});
 		}
 		else if(controls.left)
 		{
-            Matter.Body.setVelocity(player, { x : -2, y : player.velocity.y } );
-            //Matter.Body.translate(player, {x: -2, y: 0});
+            //Matter.Body.setVelocity(player, { x : -2, y : player.velocity.y } );
+            Matter.Body.translate(player, {x: -2, y: 0});
 		}
         if(controls.jump && controls.is_jump_enabled)
         {
