@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>matter.js example 5</title>
+        <link rel="stylesheet" href="example.css">
+        <style>
+        canvas
+        {
+            width: 640px;
+            height: 480px;
+            background-color: black;
+        }
+        </style>
+    </head>
+    <body>
+
+        <canvas width="640px" height="480px"></canvas>
+    	<script src="./platformBuilder.js"></script>
+
+        <script>
+            var canvas = document.querySelector("canvas");
+            var context = canvas.getContext("2d");
+            var box_size = 32;
+            var rows = 15;
+            var cols = 20;
+            var map = [
+                [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ],
+                [ 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1 ],
+                [ 1,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1 ],
+                [ 1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,0,1 ],
+                [ 1,0,2,0,0,1,1,0,0,0,0,2,2,0,0,0,2,2,0,1 ],
+                [ 1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1 ],
+                [ 1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1 ],
+                [ 1,1,1,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,1,1 ],
+                [ 1,1,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1 ],
+                [ 1,0,0,0,0,0,0,2,0,0,0,2,2,0,0,0,0,0,0,1 ],
+                [ 1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1,1,1,1,1 ],
+                [ 1,0,0,0,0,1,1,1,1,0,0,2,2,0,0,0,0,0,0,1 ],
+                [ 1,0,3,0,0,1,1,1,1,0,0,2,2,0,0,0,0,0,0,1 ],
+                [ 1,0,0,0,2,1,1,1,1,0,0,0,2,0,0,0,0,0,0,1 ],
+                [ 1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1 ],
+            ];
+
+            function render()
+            {
+                context.clearRect(0,0,canvas.width,canvas.height);
+                context.fillStyle = "maroon";
+                for(var i = 0; i < cols; i++)
+                {
+                    for(var j = 0; j < rows; j++)
+                    {
+                        if(map[j][i] == 1)
+                        {
+                            context.fillRect(i * box_size, j * box_size, box_size, box_size );
+                        }
+                    }
+                }
+            }
+
+            function debug_render(platforms)
+            {
+                for(var p = 0; p < platforms.length; p++)
+                {
+                    var platform = platforms[p];
+                    var v = 0;
+                    context.lineWidth = 5;
+                    context.strokeStyle = "#00ff00";
+                    context.beginPath();
+                    context.moveTo(platform[0].x,platform[0].y);
+                    for(v = 0; v < platform.length; v++)
+                    {
+                        context.lineTo(platform[v].x,platform[v].y);
+                    }
+                    context.closePath();
+                    context.stroke();
+                }
+            }
+
+            //window.addEventListener("keyup", function(){
+                render();
+                PlatformBuilder.init(map, rows, cols, box_size);
+                debug_render(PlatformBuilder.build());
+            //});
+
+
+        </script>
+
+    </body>
+<html>
