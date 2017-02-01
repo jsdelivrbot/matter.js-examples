@@ -202,7 +202,6 @@ var game = (function() {
 
     function debug_render(platforms)
     {
-        return;
         context.save();
         for(var p = 0; p < platforms.length; p++)
         {
