@@ -7,7 +7,7 @@ var PlatformBuilder = (function(){
 	var map, rows, cols, box_size;
 	var flag_map;
 
-    var island = [];
+    var filling_counter = 0;
 
     var UP    = 0;
     var RIGHT = 1;
@@ -132,7 +132,12 @@ var PlatformBuilder = (function(){
 
     function buildSinglePlatform(x, y)
     {
+        filling_counter = 0;
         burnIsland(x,y);
+        if(filling_counter == 1)
+        {
+            return getVerticesAtPos(x,y);
+        }
         robot_position.x = x - 1;
         robot_position.y = y;
         current_direction = UP;
@@ -166,6 +171,7 @@ var PlatformBuilder = (function(){
         if(x < 0 || y < 0 || x >= cols || y >= rows || map[y][x] != 1 || flag_map[y][x] != 0)
             return;
 
+        filling_counter++;
         flag_map[y][x] = 1;
 
         burnIsland(x, y - 1);
