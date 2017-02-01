@@ -4,6 +4,9 @@
 
 var PlatformBuilder = (function(){
 
+    var max_calls = 10000;
+    var call_count = 0;
+
 	var map, rows, cols, box_size;
 	var flag_map;
 
@@ -48,6 +51,8 @@ var PlatformBuilder = (function(){
 
     function getVerticesAtPos(x , y)
     {
+        // 3  0
+        // 2  1
         return[
             { x : x * (box_size)  + box_size , y : y * box_size},
             { x : x * (box_size)  + box_size , y : (y * box_size) + box_size },
@@ -130,6 +135,15 @@ var PlatformBuilder = (function(){
         ]];
 	}
 
+    function isPolygonClosed(res)
+    {
+        if(res.length < 3)
+            return false;
+        if(res[0].x == res[res.length-1].x && res[0].y == res[res.length-1].y)
+            return true;
+        return false;
+    }
+
     function buildSinglePlatform(x, y)
     {
         filling_counter = 0;
@@ -144,8 +158,15 @@ var PlatformBuilder = (function(){
         next_direction = RIGHT;
         var res = [];
         walk();
-        while(robot_position.x != (x-1) || robot_position.y != y)
+        call_count = 0;
+        while(!isPolygonClosed(res))
         {
+            call_count++;
+            if(call_count > max_calls)
+            {
+                console.error("max calls reached");
+                break;
+            }
             if(canRotate())
             {
                 res.push(getVerticesAtPos(robot_position.x, robot_position.y)[next_direction]);

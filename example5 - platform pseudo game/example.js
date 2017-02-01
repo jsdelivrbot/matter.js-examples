@@ -3,7 +3,7 @@
 var game = (function() {
 
 	var engine = null;
-
+    var platforms = null;
 	var canvas = null;
 	var context = null;
 
@@ -27,21 +27,21 @@ var game = (function() {
 	var box_size =  32;
 
 	var map = [
-	    [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ],
-	    [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ],
-	    [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ],
-	    [ 1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,2,0,1 ],
-	    [ 1,0,2,0,0,1,1,0,0,0,0,2,2,0,0,0,2,2,0,1 ],
-	    [ 1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,1 ],
-	    [ 1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1 ],
-	    [ 1,1,1,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,1,1 ],
-	    [ 1,1,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1 ],
-	    [ 1,0,0,0,0,0,0,2,0,0,0,2,2,0,0,0,0,0,0,1 ],
-	    [ 1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1,1,1,1,1 ],
-	    [ 1,0,0,0,0,1,1,1,1,0,0,2,2,0,0,0,0,0,0,1 ],
-	    [ 1,0,3,0,0,1,1,1,1,0,0,2,2,0,0,0,0,0,0,1 ],
-	    [ 1,0,0,0,2,1,1,1,1,0,0,0,2,0,0,0,0,0,0,1 ],
-	    [ 1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1 ],
+                [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ],
+                [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ],
+                [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ],
+                [ 1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,0,1 ],
+                [ 1,0,2,0,0,1,0,0,0,0,0,2,2,0,0,0,2,2,0,1 ],
+                [ 1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,0,1 ],
+                [ 1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1 ],
+                [ 1,1,1,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,0,1 ],
+                [ 1,1,0,0,0,0,0,0,0,0,0,2,2,0,0,0,0,0,2,2 ],
+                [ 1,0,0,0,0,0,0,2,0,0,0,2,2,0,0,0,0,1,1,1 ],
+                [ 1,0,0,0,0,0,0,2,2,0,0,0,0,0,0,0,0,1,1,1 ],
+                [ 1,0,0,0,0,1,1,1,1,0,0,2,2,0,0,0,0,1,1,1 ],
+                [ 1,0,3,0,0,1,1,1,1,0,0,1,1,0,0,0,0,0,0,0 ],
+                [ 1,0,0,0,2,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0 ],
+                [ 1,1,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,1,1 ],
 	];
 
 	var rows = 15, cols = 20;
@@ -70,7 +70,7 @@ var game = (function() {
             {
             	var type = map[j][i];
             	var isStatic = type == 1;
-            	if(type != 0)
+            	if(type != 0 && type != 1)
             	{
                      var obj = Matter.Bodies.rectangle(
                      	i * box_size + (box_size >> 1),
@@ -90,6 +90,19 @@ var game = (function() {
                      }
             	}
             }
+        }
+
+        PlatformBuilder.init(map, rows, cols, box_size);
+        platforms = PlatformBuilder.build();
+
+        for(var i = 0; i < platforms.length; i++)
+        {
+            var aux = Matter.Bodies.fromVertices(0,0,platforms[i], {isStatic : true}, true);
+            rocks.push(Matter.Bodies.fromVertices(
+                -aux.bounds.min.x + platforms[i][0].x ,
+                -aux.bounds.min.y + platforms[i][0].y ,
+                platforms[i], {isStatic : true}, true)
+            );
         }
 
         Matter.World.add(engine.world, rocks);
@@ -168,20 +181,6 @@ var game = (function() {
         	}
         }
 
-
-        //var i = 0;
-        //var l = rocks.length;
-        //for(i = 0; i < l; i++)
-        //{
-        //	var r = rocks[i];
-        //    context.save();
-        //    context.translate(r.position.x, r.position.y);
-        //    context.rotate(r.angle);
-        //    //context.drawImage(rock_texture,25, 15, 50, 50, (-box_size>>1) , (-box_size>>1), box_size, box_size );
-        //    context.drawImage(rock_texture,25, 76, 50, 49, (-box_size>>1) , (-box_size>>1), box_size, box_size );
-        //    context.restore();
-        //}
-
         var l = boxes.length;
         for(i = 0; i < l; i++)
         {
@@ -198,7 +197,30 @@ var game = (function() {
         context.rotate(player.angle);
         context.drawImage(player_texture, (-box_size>>1) , (-box_size>>1), box_size, box_size );
         context.restore();
+        debug_render(platforms);
 	}
+
+    function debug_render(platforms)
+    {
+        return;
+        context.save();
+        for(var p = 0; p < platforms.length; p++)
+        {
+            var platform = platforms[p];
+            var v = 0;
+            context.lineWidth = 5;
+            context.strokeStyle = "#ff0000";
+            context.beginPath();
+            context.moveTo(platform[0].x,platform[0].y);
+            for(v = 0; v < platform.length; v++)
+            {
+                context.lineTo(platform[v].x,platform[v].y);
+            }
+            context.closePath();
+            context.stroke();
+        }
+        context.restore();
+    }
 
     return { init           : init,
     	     handleKeyEvent : handleKeyEvent };
