@@ -35,6 +35,8 @@ var game = (function() {
         left  : false,
         jump  : false,
         is_jump_enabled : false,
+        thunder : false,
+        is_thunder_enabled : true,
     };
 
     var debug_information = {
@@ -204,7 +206,15 @@ var game = (function() {
             handleKeyEvent(e.keyCode, false);
         });
         Matter.Events.on(engine, 'collisionStart', onCollisionStart);
-        //Matter.Engine.run(engine);
+        Matter.Engine.run(engine);
+        ThunderEffectManager.init({
+            canvas : canvas,
+            context : context,
+            fps : 30,
+            ttl : 1000,
+            deviation : 50,
+            joint_count : 10, 
+        });        
         requestAnimationFrame(update);
     }
 
@@ -215,6 +225,7 @@ var game = (function() {
             case 65 : controls.left = value; break;
             case 68 : controls.right = value; break;
             case 87 : controls.jump = value; break;
+            case 32 : controls.thunder = value; break;
         }
     }
 
@@ -245,11 +256,19 @@ var game = (function() {
             controls.is_jump_enabled = false;
             Matter.Body.setVelocity(player, { x : player.velocity.x , y : -8} );
         }
+        if(controls.thunder && controls.is_thunder_enabled)
+        {
+            controls.is_thunder_enabled = false;
+            ThunderEffectManager.addThunder(player.position.x, canvas.height - 32);
+            setTimeout(function(){
+                controls.is_thunder_enabled = true;
+            },1000);
+        }        
         if(Math.abs(player.velocity.y) > 3)
         {
             sprites.current = sprites.FALLING;
         }
-        Matter.Engine.update(engine, 15);
+        //Matter.Engine.update(engine, 15);
         render();
         requestAnimationFrame(update);
     }
@@ -302,6 +321,7 @@ var game = (function() {
         {
             sprites.player[sprites.current].render(player.position.x -15, player.position.y - 15, 30, 30, controls.left);
         }
+        ThunderEffectManager.draw();
         debug_render(debug_information.platforms);
     }
 
