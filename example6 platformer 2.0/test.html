@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    	<style>
+    	canvas
+    	{
+	        width: 640px;
+	        height: 480px;
+	        background-color: black;
+	        background-image: url(http://orig09.deviantart.net/879c/f/2012/119/1/0/pixel_waterfall_bg__by_isohei-d4xntof.gif);
+	        background-size: 640px 480px;
+    	}
+    	</style>
+    </head>
+    <body>
+    	<canvas width="640px" height="480px"></canvas>
+    	<script src="./ThunderEffectManager.js"></script>
+    	<script>
+
+    	var canvas = document.querySelector("canvas");
+    	var context = canvas.getContext("2d");
+
+    	ThunderEffectManager.init({
+    		canvas : canvas,
+    		context : context,
+            fps : 30,
+            ttl : 1000,
+            deviation : 50,
+            joint_count : 10, 
+    	});
+
+    	canvas.addEventListener("click", function(e){
+            ThunderEffectManager.addThunder(e.clientX, e.clientY);
+    	});
+
+    	function render()
+    	{
+    		context.clearRect(0,0, canvas.width, canvas.height);
+    		ThunderEffectManager.draw();
+    		requestAnimationFrame(render);
+    	}
+
+    	requestAnimationFrame(render);
+
+    	</script>
+    </body>
+</html>
