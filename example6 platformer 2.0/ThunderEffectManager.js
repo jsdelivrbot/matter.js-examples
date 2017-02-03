@@ -33,14 +33,21 @@ var ThunderEffectManager = (function(){
         	deviation : deviation,
         	joint_count : joint_count,
         	creation_time    : creation_time,
-        	polygon          : generateThunderPolygon(x, 0, x, y, deviation, joint_count),
+        	polygon          : generateThunderPolygon(x, -10, x, y, deviation, joint_count),
         	frame_time_stamp : creation_time,
         });
         thunders.push({
         	deviation : deviation/2,
         	joint_count : joint_count/2, 
         	creation_time    : creation_time,
-        	polygon          : generateThunderPolygon(x, 0, x, y, deviation/2, joint_count/2),
+        	polygon          : generateThunderPolygon(x, -10, x, y, deviation/2, joint_count/2),
+        	frame_time_stamp : creation_time,
+        });
+        thunders.push({
+        	deviation : deviation/2,
+        	joint_count : joint_count/2, 
+        	creation_time    : creation_time,
+        	polygon          : generateThunderPolygon(x, -10, x, y, deviation/2, joint_count/2),
         	frame_time_stamp : creation_time,
         });
     }
@@ -60,7 +67,7 @@ var ThunderEffectManager = (function(){
                 {
                 	thunders[i].polygon = generateThunderPolygon (
                 		thunders[i].polygon[0].x,
-                		0,
+                		-50,
                 		thunders[i].polygon[0].x,
                 		thunders[i].polygon[thunders[i].polygon.length - 1].y, thunders[i].deviation, thunders[i].joint_count
                 	);
