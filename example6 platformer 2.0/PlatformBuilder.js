@@ -4,7 +4,7 @@
 
 var PlatformBuilder = (function(){
 
-    var disable_builder = true;
+    var disable_builder = false;
 
     var max_calls = 10000;
     var call_count = 0;
