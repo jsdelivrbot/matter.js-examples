@@ -4,6 +4,8 @@
 
 var PlatformBuilder = (function(){
 
+    var disable_builder = true;
+
     var max_calls = 10000;
     var call_count = 0;
 
@@ -147,9 +149,11 @@ var PlatformBuilder = (function(){
     function buildSinglePlatform(x, y)
     {
         filling_counter = 0;
-        burnIsland(x,y);
-        if(filling_counter == 1)
+        if(!disable_builder)
+            burnIsland(x,y);
+        if(filling_counter == 1 || disable_builder)
         {
+            flag_map[y][x] = 1;
             return getVerticesAtPos(x,y);
         }
         robot_position.x = x - 1;

@@ -114,7 +114,7 @@ var game = (function() {
             j * box_size + (box_size >> 1),
             box_size,
             box_size,
-            { isStatic: false,  friction: 1.0 }
+            { isStatic: false,  friction: 1.0, label: "box" }
         ));
     }
 
@@ -127,7 +127,7 @@ var game = (function() {
             rocks.push(Matter.Bodies.fromVertices(
                 -aux.bounds.min.x + platforms[i][0].x ,
                 -aux.bounds.min.y + platforms[i][0].y ,
-                platforms[i], {isStatic : true}, true)
+                platforms[i], {isStatic : true, label: "rock"}, true)
             );
         }
     }
@@ -258,8 +258,34 @@ var game = (function() {
         }
         if(controls.thunder && controls.is_thunder_enabled)
         {
+            var thunder_x = player.position.x;
+            var thunder_y = canvas.height - 32;
+
             controls.is_thunder_enabled = false;
-            ThunderEffectManager.addThunder(player.position.x, canvas.height - 32);
+            var bodies = Matter.Composite.allBodies(engine.world);
+            var collisions = Matter.Query.ray(bodies, { x: thunder_x, y : 0 }, { x: thunder_x, y : thunder_y });
+
+            collisions.sort(function(a,b){
+                return a.body.position.y - b.body.position.y;
+            });
+
+            //if(collisions.length != 0)
+            //{
+            //    thunder_y = collisions[0].body.position.y - (box_size>>1);
+            //}
+
+            for(var i = 0; i < collisions.length; i++)
+            {
+                if(collisions[i].body.label == "box")
+                    Matter.Body.applyForce(collisions[i].body, collisions[i].body.position, { x: -0.01, y: -0.03 });
+                if(collisions[i].body.label == "rock"){
+                    thunder_y = collisions[i].body.position.y - (box_size>>1);
+                    break;
+                }
+            }
+
+
+            ThunderEffectManager.addThunder(thunder_x, thunder_y);
             setTimeout(function(){
                 controls.is_thunder_enabled = true;
             },1000);
@@ -330,7 +356,7 @@ var game = (function() {
         return;
         context.save();
         for(var p = 0; p < platforms.length; p++)
-        {a
+        {
             var platform = platforms[p];
             var v = 0;
             context.lineWidth = 5;
