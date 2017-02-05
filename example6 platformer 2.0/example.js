@@ -20,6 +20,7 @@ var game = (function() {
         FALLING : 2,
         current : 1,
         player  : [],
+        last_dir : "right",
     }
 
     /* do not touch neither
@@ -149,12 +150,8 @@ var game = (function() {
         Sprite.init(canvas, context);
 
         sprites.player.push(new Sprite({
-            filename : "http://tsgk.captainn.net/dld.php?s=custom&f=semijuggalo_ssbm-pikachu_sheet.png",
-            x_offset : 30,
-            y_offset : 139,
-            width    : 60,
-            height   : 30,
-            fps      : 10,
+            filename : "http://oi67.tinypic.com/2luoo7.jpg",
+            fps      : 20,
             frame_count : 4,
         }));
 
@@ -169,12 +166,10 @@ var game = (function() {
         }));
 
         sprites.player.push(new Sprite({
-            filename : "http://tsgk.captainn.net/dld.php?s=custom&f=semijuggalo_ssbm-pikachu_sheet.png",
-            x_offset : 110,
-            y_offset : 250,
-            width    : 40,
-            height   : 30,
-            fps      : 1,
+            filename : "http://oi67.tinypic.com/2luoo7.jpg",
+            fps      : 20,
+            x_offset : (399) * 2,
+            width    : 399,
             frame_count : 1,
         }));
 
@@ -237,6 +232,8 @@ var game = (function() {
             Matter.Body.translate(player, {x: 2, y: 0});
             if(sprites.current != sprites.FALLING)
                 sprites.current = sprites.RUNNING;
+
+            sprites.last_dir = "right";
         }
         else if(controls.left)
         {
@@ -244,6 +241,7 @@ var game = (function() {
             Matter.Body.translate(player, {x: -2, y: 0});
             if(sprites.current != sprites.FALLING)
                  sprites.current = sprites.RUNNING;
+             sprites.last_dir = "left";
         }
         else
         {
@@ -347,13 +345,13 @@ var game = (function() {
         context.translate(player.position.x, player.position.y);
         context.rotate(player.angle);
         context.restore();
-        if(sprites.current == sprites.RUNNING)
+        if(sprites.current == sprites.RUNNING || sprites.current == sprites.FALLING)
         {
-            sprites.player[sprites.current].render(player.position.x -25, player.position.y - 15, 50, 30, controls.left);
+            sprites.player[sprites.current].render(player.position.x -25, player.position.y - 15, 50, 30, sprites.last_dir != "right");
         }
         else
         {
-            sprites.player[sprites.current].render(player.position.x -15, player.position.y - 15, 30, 30, controls.left);
+            sprites.player[sprites.current].render(player.position.x -15, player.position.y - 15, 30, 30, sprites.last_dir != "right");
         }
         ThunderEffectManager.draw();
         debug_render(debug_information.platforms);

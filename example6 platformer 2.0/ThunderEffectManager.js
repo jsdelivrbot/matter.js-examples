@@ -51,11 +51,33 @@ var ThunderEffectManager = (function(){
         	frame_time_stamp : creation_time,
         });
     }
-
+    var white = true;
     function draw()
     {
     	var current_time = new Date().getTime();
     	var i , l = thunders.length;
+        var effect_visible =  false;
+        for(i = 0; i < l; i++)
+        {
+            if(current_time - thunders[i].creation_time < ttl )
+            {
+                effect_visible = true;
+            }
+        }
+
+        if(effect_visible)
+        {
+            context.save();
+            if(white)
+                context.fillStyle = "black";
+            else
+                context.fillStyle = "white";
+            white = !white;
+            context.globalAlpha = 0.3;
+            context.fillRect(0,0, canvas.width, canvas.height);
+            context.restore();
+        }
+
         for(i = 0; i < l; i++)
         {
             if(current_time - thunders[i].creation_time < ttl )
