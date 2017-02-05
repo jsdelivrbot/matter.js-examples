@@ -156,13 +156,9 @@ var game = (function() {
         }));
 
         sprites.player.push(new Sprite({
-            filename : "http://tsgk.captainn.net/dld.php?s=custom&f=semijuggalo_ssbm-pikachu_sheet.png",
-            x_offset : 25,
-            y_offset : 20,
-            width    : 40,
-            height   : 30,
-            fps      : 1,
-            frame_count : 1,
+            filename : "http://oi67.tinypic.com/avr3x4.jpg",
+            fps      : 2,
+            frame_count : 2,
         }));
 
         sprites.player.push(new Sprite({
@@ -351,7 +347,7 @@ var game = (function() {
         }
         else
         {
-            sprites.player[sprites.current].render(player.position.x -15, player.position.y - 15, 30, 30, sprites.last_dir != "right");
+            sprites.player[sprites.current].render(player.position.x -20, player.position.y - 20, 40, 40, sprites.last_dir != "right");
         }
         ThunderEffectManager.draw();
         debug_render(debug_information.platforms);
