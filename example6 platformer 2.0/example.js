@@ -52,9 +52,9 @@ var game = (function() {
                 [ 0,0,0,0,0,0,0,2,2,2,0,0,0,0,0,0,0,0,0,0 ],
                 [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ],
                 [ 0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0 ],
-                [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ],
-                [ 0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ],
-                [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 ],
+                [ 0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0 ],
+                [ 0,2,2,2,0,0,0,0,1,1,1,0,0,0,0,0,0,0,0,0 ],
+                [ 0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0 ],
                 [ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,0,0,0 ],
                 [ 0,1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,0 ],
                 [ 0,0,3,0,0,0,0,0,0,0,0,0,2,2,2,0,0,0,0,0 ],
@@ -258,34 +258,8 @@ var game = (function() {
         }
         if(controls.thunder && controls.is_thunder_enabled)
         {
-            var thunder_x = player.position.x;
-            var thunder_y = canvas.height - 32;
-
             controls.is_thunder_enabled = false;
-            var bodies = Matter.Composite.allBodies(engine.world);
-            var collisions = Matter.Query.ray(bodies, { x: thunder_x, y : 0 }, { x: thunder_x, y : thunder_y });
-
-            collisions.sort(function(a,b){
-                return a.body.position.y - b.body.position.y;
-            });
-
-            //if(collisions.length != 0)
-            //{
-            //    thunder_y = collisions[0].body.position.y - (box_size>>1);
-            //}
-
-            for(var i = 0; i < collisions.length; i++)
-            {
-                if(collisions[i].body.label == "box")
-                    Matter.Body.applyForce(collisions[i].body, collisions[i].body.position, { x: -0.01, y: -0.03 });
-                if(collisions[i].body.label == "rock"){
-                    thunder_y = collisions[i].body.position.y - (box_size>>1);
-                    break;
-                }
-            }
-
-
-            ThunderEffectManager.addThunder(thunder_x, thunder_y);
+            ThunderShock();
             setTimeout(function(){
                 controls.is_thunder_enabled = true;
             },1000);
@@ -294,9 +268,44 @@ var game = (function() {
         {
             sprites.current = sprites.FALLING;
         }
-        //Matter.Engine.update(engine, 15);
         render();
         requestAnimationFrame(update);
+    }
+
+    function getThunderContactPoint(x)
+    {
+        var x_coord = (x / box_size)|0;
+        for(var i = 0; i < rows; i++)
+        {
+            if(map[i][x_coord] == 1) // 1 means rock
+            {
+                return i * box_size;
+            }
+        }
+        return rows * box_size;
+    }
+
+    function ThunderShock()
+    {
+            var thunder_x = player.position.x;
+            var thunder_y = getThunderContactPoint(player.position.x);
+
+            var bodies = Matter.Composite.allBodies(engine.world);
+            var collisions = Matter.Query.ray(bodies, { x: thunder_x + 10, y : 0 }, { x: thunder_x + 10, y : thunder_y }, box_size * 3);
+
+            for(var i = 0; i < collisions.length; i++)
+            {
+                if(collisions[i].body.label == "box" && collisions[i].body.position.y < thunder_y)
+                {
+                    var force = {
+                        x : (collisions[i].body.position.x - thunder_x) * 0.0002,
+                        y : -0.04
+                    };
+                    Matter.Body.applyForce(collisions[i].body, collisions[i].body.position, force);
+                }
+            }
+
+            ThunderEffectManager.addThunder(thunder_x, thunder_y);
     }
 
     function render()
@@ -337,7 +346,6 @@ var game = (function() {
         context.save();
         context.translate(player.position.x, player.position.y);
         context.rotate(player.angle);
-        //context.drawImage(player_texture, (-box_size>>1) + 8 , (-box_size>>1), box_size, box_size );
         context.restore();
         if(sprites.current == sprites.RUNNING)
         {
