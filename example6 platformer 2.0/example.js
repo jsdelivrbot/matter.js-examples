@@ -205,6 +205,7 @@ var game = (function() {
             ttl : 1000,
             deviation : 50,
             joint_count : 10, 
+            player : player,
         });        
         requestAnimationFrame(update);
     }
@@ -224,8 +225,8 @@ var game = (function() {
     {
         if(controls.right)
         {
-            //Matter.Body.setVelocity(player, { x : 2, y : player.velocity.y } );
-            Matter.Body.translate(player, {x: 2, y: 0});
+            Matter.Body.setVelocity(player, { x : 2, y : player.velocity.y } );
+            //Matter.Body.translate(player, {x: 2, y: 0});
             if(sprites.current != sprites.FALLING)
                 sprites.current = sprites.RUNNING;
 
@@ -233,8 +234,8 @@ var game = (function() {
         }
         else if(controls.left)
         {
-            //Matter.Body.setVelocity(player, { x : -2, y : player.velocity.y } );
-            Matter.Body.translate(player, {x: -2, y: 0});
+            Matter.Body.setVelocity(player, { x : -2, y : player.velocity.y } );
+            //Matter.Body.translate(player, {x: -2, y: 0});
             if(sprites.current != sprites.FALLING)
                  sprites.current = sprites.RUNNING;
              sprites.last_dir = "left";
@@ -305,6 +306,9 @@ var game = (function() {
     function render()
     {
         context.clearRect(0,0, canvas.width, canvas.height);
+        context.save();
+        var camera_translation = -(player.position.x|0) + (canvas.width>>1);
+        context.translate(camera_translation, 0);
 
         for(var i = 0; i < cols; i++)
         {
@@ -351,6 +355,7 @@ var game = (function() {
         }
         ThunderEffectManager.draw();
         debug_render(debug_information.platforms);
+        context.restore();
     }
 
     function debug_render(platforms)

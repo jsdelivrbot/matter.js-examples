@@ -2,6 +2,7 @@
 
 var ThunderEffectManager = (function(){
 
+    var player;
 	var canvas;
 	var context;
 	var fps;
@@ -21,6 +22,7 @@ var ThunderEffectManager = (function(){
         ttl = options.ttl;
         deviation = options.deviation;
         joint_count = options.joint_count;
+        player = options.player;
 
         // -------------------------------
         frame_time_limit = 1 / fps * 1000;
@@ -68,6 +70,8 @@ var ThunderEffectManager = (function(){
         if(effect_visible)
         {
             context.save();
+            var camera_translation = -(player.position.x|0) + (canvas.width>>1);
+            context.translate(-camera_translation,0);
             if(white)
                 context.fillStyle = "black";
             else
