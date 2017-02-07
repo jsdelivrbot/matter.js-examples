@@ -134,8 +134,8 @@ var CrayonPhysics = (function(){
               y : current_polygon[0].y,
           });
           console.log(current_polygon.length + " vertices");
-          current_polygon = PolyCompressor.compress(current_polygon);
-          console.log(current_polygon.length + " vertices - compressed");
+          //current_polygon = PolyCompressor.compress(current_polygon);
+          //console.log(current_polygon.length + " vertices - compressed");
           var centroid = Matter.Vertices.centre(current_polygon);
           var body = Matter.Bodies.fromVertices(centroid.x, centroid.y, current_polygon);
           if(body == undefined)
