@@ -1,7 +1,41 @@
 
-
 var canvas = document.querySelector("canvas");
 var context = canvas.getContext("2d");
+
+var CrayonPhysics = (function(){
+
+  var canvas;
+  var context;
+  var img_crayon;
+  var img_background;
+
+  function init(options)
+  {
+
+  }
+
+  function render()
+  {
+
+  }
+
+  function onTouchEvent(e)
+  {
+
+  }
+
+})();
+
+var crayon = new Image();
+var background = new Image();
+crayon.src = "http://icons.iconarchive.com/icons/designcontest/vintage/256/Crayon-icon.png";
+background.src = "http://www.powerpointhintergrund.com/uploads/notebook-ppt-background-2.jpg";
+var crayon_pos = {x : 0, y : 0};
+
+canvas.addEventListener("mousemove", function(e) {
+    crayon_pos.x =  e.clientX - 5;
+    crayon_pos.y =  e.clientY - 95;
+});
 
 var engine = Matter.Engine.create();
 Matter.Engine.run(engine);
@@ -26,7 +60,7 @@ Matter.World.add(engine.world, [ground]);
 function render()
 {
     context.clearRect(0,0, canvas.width, canvas.height);
-
+    context.drawImage(background,0,0, canvas.width, canvas.height);
     context.save();
     if(current_polygon.length > 1)
     {
@@ -41,21 +75,6 @@ function render()
         context.stroke();
     }
     context.restore();
-   
-    //context.save();
-    //var bodies2 = Matter.Composite.allBodies(engine.world);
-    //context.beginPath();
-    //for (var i = 0; i < bodies2.length; i += 1) {
-    //    var vertices = bodies2[i].vertices;
-    //    context.moveTo(vertices[0].x, vertices[0].y);
-    //    for (var j = 1; j < vertices.length; j += 1) {
-    //        context.lineTo(vertices[j].x, vertices[j].y);
-    //    }
-    //    context.lineTo(vertices[0].x, vertices[0].y);
-    //}
-    //context.fillStyle = 'black';
-    //context.fill();
-    //context.restore();
 
     context.save();
     context.translate(ground.position.x, ground.position.y);
@@ -83,9 +102,12 @@ function render()
         	context.lineTo(bodies[i].vertices[j].x, bodies[i].vertices[j].y);
         }
         context.closePath();
-        context.fill();
+        context.lineWidth = 5;
+        context.stroke();
         context.restore();
-    }    
+    }
+
+    context.drawImage(crayon, crayon_pos.x, crayon_pos.y, 100,100);
 
     window.requestAnimationFrame(render);
 }
