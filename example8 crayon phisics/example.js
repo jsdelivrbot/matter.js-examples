@@ -15,10 +15,18 @@ var CrayonPhysics = (function(){
   var ground_info;
   var ground;
 
+  var img_pattern;
+  var pattern;
+
   function init(options)
   {
       canvas = options.canvas;
       context = options.context;
+      img_pattern = new Image();
+      img_pattern.onload = function(){
+        pattern = context.createPattern(img_pattern,"repeat");
+      };
+      img_pattern.src = "http://media.istockphoto.com/illustrations/blue-pencil-strokes-on-paper-illustration-id513250661?k=6&m=513250661&s=170667a&w=0&h=eXvlZ3Ws5sLSLtr0hHGfpog8MLvJPJhsnnBpQfcZ6P8=";
       crayon = new Image();
       background = new Image();
       crayon.src = "http://icons.iconarchive.com/icons/designcontest/vintage/256/Crayon-icon.png";
@@ -58,7 +66,7 @@ var CrayonPhysics = (function(){
       context.save();
       if(current_polygon.length > 1)
       {
-          context.strokeStyle = "black";
+          context.strokeStyle = pattern;//"black";
           context.lineWidth = 5;
           context.beginPath();
           context.moveTo(current_polygon[0].x, current_polygon[0].y);
@@ -73,7 +81,7 @@ var CrayonPhysics = (function(){
       // drawing the floor
       context.save();
       context.translate(ground.position.x, ground.position.y);
-      context.fillStyle = "black";
+      context.fillStyle = pattern;//"black";
       context.fillRect(
         -ground_info.width>>1,
         -ground_info.height>>1,
@@ -90,7 +98,7 @@ var CrayonPhysics = (function(){
           context.translate(bodies[i].body.position.x, bodies[i].body.position.y);
           context.rotate(bodies[i].body.angle);
           context.translate(-bodies[i].centroid.x, -bodies[i].centroid.y);
-          context.fillStyle = "black";
+          context.strokeStyle = pattern;//"black";
           context.beginPath();
           context.moveTo(bodies[i].vertices[0].x, bodies[i].vertices[0].y);
           for(var j = 1; j < bodies[i].vertices.length; j++)
@@ -119,12 +127,13 @@ var CrayonPhysics = (function(){
       }    
       else if(e.type == "touchend")
       {
-           if(current_polygon.length == 0)
-               return;
-           current_polygon.push({
-               x : current_polygon[0].x,
-               y : current_polygon[0].y,
-           });
+          if(current_polygon.length == 0)
+              return;
+          current_polygon.push({
+              x : current_polygon[0].x,
+              y : current_polygon[0].y,
+          });
+          console.log(current_polygon.length + " vertices");
           var centroid = Matter.Vertices.centre(current_polygon);
           var body = Matter.Bodies.fromVertices(centroid.x, centroid.y, current_polygon);
           if(body == undefined)
