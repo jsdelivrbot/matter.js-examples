@@ -1,12 +1,12 @@
 
-var box_info = {
+var circle_info = {
     x : 500, y : 100,
-    width: 100, height: 100,
+    radio: 100,
 };
 
-var box2_info = {
+var circle2_info = {
     x : 150, y : 100,
-    width: 20, height: 20,
+    radio: 20,
 };
 
 var catapult_info = {
@@ -40,27 +40,25 @@ var ground = Matter.Bodies.rectangle(
 	{isStatic: true}
 );
 
-var box = Matter.Bodies.rectangle( 
-	box_info.x,
-	box_info.y,
-	box_info.width,
-	box_info.height,
+var circle = Matter.Bodies.circle( 
+	circle_info.x,
+	circle_info.y,
+	circle_info.radio,
 	{isStatic: false}
 );
 
-var box2 = Matter.Bodies.rectangle( 
-	box2_info.x,
-	box2_info.y,
-	box2_info.width,
-	box2_info.height,
+var circle2 = Matter.Bodies.circle( 
+	circle2_info.x,
+	circle2_info.y,
+	circle2_info.radio,
 	{isStatic: false}
 );
 
 Matter.World.add(engine.world, [
 	catapult,
 	ground,
-	box,
-	box2,
+	circle,
+	circle2,
 	Matter.Constraint.create({ bodyA: catapult, pointB: { x: 300, y: 590 } }),
 	Matter.Constraint.create({ bodyA: catapult, pointB: { x: 320, y: 590 } }),
     Matter.Constraint.create({ bodyA: catapult, pointB: { x: 340, y: 590 } })
@@ -96,30 +94,32 @@ function render()
 	);
 	context.restore();	
 
-    // Box 1
+    // circle 1
 	context.save();
 	context.fillStyle = "pink";
-	context.translate(box.position.x, box.position.y);
-	context.rotate(box.angle);;
-	context.fillRect(
-		-box_info.width>>1,
-		-box_info.height>>1,
-		box_info.width,
-		box_info.height
+	context.translate(circle.position.x, circle.position.y);
+	context.rotate(circle.angle);;
+	context.beginPath();
+	context.arc(
+		0,0,
+		circle_info.radio,
+		0, 2 * Math.PI
 	);
+	context.fill();
 	context.restore();		
 
-    // Box 2
+    // circle 2
 	context.save();
 	context.fillStyle = "pink";
-	context.translate(box2.position.x, box2.position.y);
-	context.rotate(box2.angle);;
-	context.fillRect(
-		-box2_info.width>>1,
-		-box2_info.height>>1,
-		box2_info.width,
-		box2_info.height
+	context.translate(circle2.position.x, circle2.position.y);
+	context.rotate(circle2.angle);;
+	context.beginPath();
+	context.arc(
+		0,0,
+		circle2_info.radio,
+		0, 2 * Math.PI
 	);
+	context.fill();
 	context.restore();	
 
     window.requestAnimationFrame(render);
