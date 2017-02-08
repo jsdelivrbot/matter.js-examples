@@ -139,13 +139,14 @@ var CrayonPhysics = (function(){
       {
           if(current_polygon.length == 0)
               return;
-          current_polygon.push({
-              x : current_polygon[0].x,
-              y : current_polygon[0].y,
-          });
+          //current_polygon.push({
+          //    x : current_polygon[0].x,
+          //    y : current_polygon[0].y,
+          //});
           console.log(current_polygon.length + " vertices");
           current_polygon = PolyCompressor.compress(current_polygon);
           console.log(current_polygon.length + " vertices - compressed");
+          //console.log(JSON.stringify(current_polygon));
           var centroid = Matter.Vertices.centre(current_polygon);
           var body = Matter.Bodies.fromVertices(centroid.x, centroid.y, current_polygon);
           if(body == undefined)
