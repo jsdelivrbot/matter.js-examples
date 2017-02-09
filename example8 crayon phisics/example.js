@@ -30,7 +30,7 @@ var CrayonPhysics = (function(){
       crayon = new Image();
       background = new Image();
       crayon.src = "http://icons.iconarchive.com/icons/designcontest/vintage/256/Crayon-icon.png";
-      background.src = "http://www.powerpointhintergrund.com/uploads/notebook-ppt-background-2.jpg";
+      background.src = "http://paper-backgrounds.com/textureimages/2012/06/yellow-aged-paper-background-hd.jpg";//"http://www.powerpointhintergrund.com/uploads/notebook-ppt-background-2.jpg";
       crayon_pos = { x : 0, y : 0 };
       canvas.addEventListener("mousemove", function(e) {
           crayon_pos.x =  e.clientX - 5;
@@ -91,6 +91,7 @@ var CrayonPhysics = (function(){
       // drawing the floor
       context.save();
       context.translate(ground.position.x, ground.position.y);
+      context.lineWidth = 5;
       context.fillStyle = pattern;//"black";
       context.fillRect(
         -ground_info.width>>1,
